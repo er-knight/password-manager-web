@@ -27,6 +27,41 @@ function UploadScreen({ onSave }) {
   )
 }
 
+function PasswordModal({ isVisible, setIsVisible, setGlobalPassword, onClose }) {
+  const [password, setPassword] = useState('')
+  
+  if (!isVisible) {
+    return <></>
+  }
+
+  return (
+    <div className="flex w-screen h-screen absolute top-0 left-0 items-center">
+      <div>
+        <label>Password</label>
+        <input type="password" value={password} onInput={(event) => setPassword(event.target.value)} placeholder="Enter password"></input>
+        <button type="button" onClick={() => {
+          setGlobalPassword(password) 
+          setIsVisible(false)
+          onClose()
+        }}>Save</button>
+      </div>
+    </div>
+  )
+}
+
+function OptionsScreen({ onClick }) {
+  return (
+    <div className="flex flex-col box-border h-screen w-screen justify-center items-center font-['DM_Sans'] text-lg font-medium">
+      <div className="flex justify-center items-center border rounded p-4 mb-1 w-[50vw] md:h-16 h-[25vw] cursor-pointer hover:bg-slate-100" onClick={() => onClick()}>
+        <p className="text-center">Upload Existing File</p>
+      </div>
+      <div className="flex justify-center items-center border rounded p-4 mt-1 w-[50vw] md:h-16 h-[25vw] cursor-pointer hover:bg-slate-100" onClick={() => onClick()}>
+        <p className="text-center">Create New File</p>
+      </div>
+    </div>
+  )
+}
+
 function MainScreen() {
 
   const [records,] = useState([
@@ -149,9 +184,29 @@ function Modal({ visible, record, index, onClose }) {
 }
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState('upload-screen')
+  const [currentScreen, setCurrentScreen] = useState('options-screen')
+  const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false)
+  const [showFileUploadModal, setShowFileUploadModal] = useState(false)
+  const [password, setPassword] = useState('')
 
-  return currentScreen == 'upload-screen'
-    ? <UploadScreen onSave={() => setCurrentScreen('main-screen')}></UploadScreen>
-    : <MainScreen></MainScreen>
+  return (
+    currentScreen == 'options-screen'
+      ? <>
+        {console.log('password', password)}
+        <PasswordModal 
+          isVisible={isPasswordModalVisible}
+          setIsVisible={setIsPasswordModalVisible}
+          setGlobalPassword={setPassword}
+          onClose={() => {setCurrentScreen('records-screen')}
+        }></PasswordModal>
+        <OptionsScreen onClick={() => setIsPasswordModalVisible(true)}></OptionsScreen>
+      </>
+      : <div>
+        {console.log('password', password)}
+        File Upload and Other
+        </div>
+  )
+  // return currentScreen == 'upload-screen'
+  //   ? <UploadScreen onSave={() => setCurrentScreen('main-screen')}></UploadScreen>
+  //   : <MainScreen></MainScreen>
 }
